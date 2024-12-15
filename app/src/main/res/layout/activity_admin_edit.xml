@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dark"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp"
+        tools:context=".admin.AdminEdit">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/btn_back"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginRight="100dp"
+                android:background="@drawable/ic_back"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Komik"
+                android:textColor="@color/white"
+                android:textSize="23sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/edit_cover"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="50dp"
+            android:paddingLeft="20dp"
+            android:hint="Link Cover"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_title"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="35dp"
+            android:paddingLeft="20dp"
+            android:hint="Judul"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_author"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:paddingLeft="20dp"
+            android:hint="Pengarang"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_genre"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:paddingLeft="20dp"
+            android:hint="Genre"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_type"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:paddingLeft="20dp"
+            android:hint="Tipe"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_status"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:paddingLeft="20dp"
+            android:hint="Status"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_released"
+            android:layout_width="288dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="24dp"
+            android:paddingLeft="20dp"
+            android:hint="Tahun Terbit"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <EditText
+            android:id="@+id/edit_synopsis"
+            android:layout_width="288dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="24dp"
+            android:paddingLeft="20dp"
+            android:hint="Sinopsis"
+            android:textColorHint="@color/grey"
+            android:textColor="@color/white"
+            android:background="@drawable/input_field"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_update"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:textAllCaps="false"
+            android:text="Simpan"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded"
+            android:backgroundTint="#4CAF50"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_delete"
+            android:layout_width="200dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="35dp"
+            android:textAllCaps="false"
+            android:text="Hapus"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:textColor="@color/white"
+            android:background="@drawable/rounded"
+            android:backgroundTint="#DB0202"/>
+    </LinearLayout>
+</ScrollView>

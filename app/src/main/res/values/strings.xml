@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Komikara</string>
+    <string name="confirmation">By Checking the box you agree to our <font color="#1E1E1E">Terms</font> and <font color="#1E1E1E">Conditions</font></string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/userHomeFragment"
+        android:icon="@drawable/ic_home"
+        android:title="Beranda" />
+    <item
+        android:id="@+id/userNewestFragment"
+        android:icon="@drawable/ic_history"
+        android:title="Terbaru" />
+    <item
+        android:id="@+id/userBookmarkFragment"
+        android:icon="@drawable/ic_bookmark"
+        android:title="Rak Buku" />
+    <item
+        android:id="@+id/userProfileFragment"
+        android:icon="@drawable/ic_person"
+        android:title="Profil" />
+</menu>

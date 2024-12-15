@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="InputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.Dense">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="boxBackgroundMode">outline</item>
+        <item name="boxBackgroundColor">#EDEDED</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxCornerRadiusTopStart">5dp</item>
+        <item name="boxCornerRadiusTopEnd">5dp</item>
+        <item name="boxCornerRadiusBottomStart">5dp</item>
+        <item name="boxCornerRadiusBottomEnd">5dp</item>
+    </style>
+
+    <style name="EditText" parent="Widget.MaterialComponents.TextInputEditText.FilledBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:inputType">text</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+    </style>
+
+    <style name="CustomRoundedButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/rounded</item>
+        <item name="backgroundTint">@color/dark</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <style name="CustomBottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorSecondary">@android:color/transparent</item>
+        <item name="colorSurface">@android:color/transparent</item>
+    </style>
+</resources>
