@@ -25,5 +25,8 @@ interface KomikDao {
     fun getAllkomik(): List<KomikData>
 
     @Query("SELECT * FROM komik WHERE id = :id")
-    suspend fun getkomikById(id: String): KomikData?
+    suspend fun getkomikById(id: Int): KomikData?
+
+    @Query("SELECT * FROM komik WHERE title = :title")
+    fun getkomikByTitle(title: String): KomikData?
 }

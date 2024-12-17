@@ -2,7 +2,6 @@ package com.dza.komikara.user
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -33,20 +32,25 @@ class UserDetail : AppCompatActivity() {
 
         komikRoomDatabase = KomikRoomDatabase.getDatabase(this)
 
-        // Mengambil ID detail dari Intent
-        val komikId = intent.getStringExtra("komikId") ?: ""
-        if (komikId.isNotEmpty()) {
-            fetchDetailKomik(komikId) // Ambil data dari API berdasarkan ID
-        } else {
+        val komikId = intent.getStringExtra("komikId")
+        val isLocal = intent.getBooleanExtra("isLocal", false)
+
+        if (komikId.isNullOrEmpty()) {
             Toast.makeText(this, "ID tidak ditemukan atau tidak valid", Toast.LENGTH_SHORT).show()
             finish()
+            return
         }
 
-        binding.btnBack.setOnClickListener {
-            finish()
+        if (isLocal) {
+            fetchLocalKomik(komikId)
+        } else {
+            fetchDetailKomik(komikId)
         }
+
+        binding.btnBack.setOnClickListener { finish() }
 
         binding.btnFav.setOnClickListener {
+            val coverTag = binding.detailCover.tag?.toString() ?: "https://example.com/default-cover.jpg"
             if (isFavorite) {
                 removeFromFavorites(binding.detailTitle.text.toString())
             } else {
@@ -58,7 +62,7 @@ class UserDetail : AppCompatActivity() {
                     binding.detailStatus.text.toString(),
                     binding.detailReleased.text.toString(),
                     binding.detailSynopsis.text.toString(),
-                    binding.detailCover.tag.toString()
+                    coverTag
                 )
             }
         }
@@ -66,39 +70,33 @@ class UserDetail : AppCompatActivity() {
         getAllChapters()
     }
 
-    // Fungsi untuk mengambil data detail dari API
     private fun fetchDetailKomik(id: String) {
         val apiService = ApiClient.getInstance()
-        apiService.getAllKomiks().enqueue(object : Callback<List<Komiks>> {
-            override fun onResponse(call: Call<List<Komiks>>, response: Response<List<Komiks>>) {
+        apiService.getKomiksById(id).enqueue(object : Callback<Komiks> {
+            override fun onResponse(call: Call<Komiks>, response: Response<Komiks>) {
                 if (response.isSuccessful) {
-                    val komik = response.body()?.find { it.id == id }
-                    if (komik != null) {
+                    val komik = response.body()
+                    komik?.let {
                         with(binding) {
-                            detailTitle.text = komik.title
-                            detailAuthor.text = komik.author
-                            detailGenre.text = komik.genre
-                            detailType.text = komik.type
-                            detailStatus.text = komik.status
-                            detailReleased.text = komik.released
-                            detailSynopsis.text = komik.synopsis
+                            detailTitle.text = it.title
+                            detailAuthor.text = it.author
+                            detailGenre.text = it.genre
+                            detailType.text = it.type
+                            detailStatus.text = it.status
+                            detailReleased.text = it.released
+                            detailSynopsis.text = it.synopsis
 
-                            Glide.with(this@UserDetail).load(komik.cover).into(detailCover)
-                            detailCover.setTag(R.id.detail_cover, komik.cover) // Simpan URL gambar sebagai tag dengan ID spesifik
+                            Glide.with(this@UserDetail).load(it.cover).into(detailCover)
+                            detailCover.tag = it.cover // Simpan URL cover dengan benar
                         }
-                        komik.id?.let { id -> checkIfFavorite(id) } ?: run {
-                            Toast.makeText(this@UserDetail, "ID komik tidak ditemukan", Toast.LENGTH_SHORT).show()
-                        }
-                        updateFavoriteIcon()
-                    } else {
-                        Toast.makeText(this@UserDetail, "Komik tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        checkIfFavorite(id)
                     }
                 } else {
                     Toast.makeText(this@UserDetail, "Gagal memuat data", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<List<Komiks>>, t: Throwable) {
+            override fun onFailure(call: Call<Komiks>, t: Throwable) {
                 Toast.makeText(this@UserDetail, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
@@ -107,11 +105,45 @@ class UserDetail : AppCompatActivity() {
     private fun getAllChapters() {
         val chapters = listOf("Chapter 1", "Chapter 2", "Chapter 3", "Chapter 4", "Chapter 5", "Chapter 6", "Chapter 7", "Chapter 8", "Chapter 9", "Chapter 10")
         val adapter = ChapterAdapter(this, chapters)
-
         binding.listChapter.adapter = adapter
     }
 
-    private fun addToFavorites(title: String?, author: String?, genre: String?, type: String?, status: String?, released: String?, synopsis: String?, cover: String?) {
+    private fun fetchLocalKomik(id: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val komik = komikRoomDatabase.komiksDao()?.getkomikById(id.toInt())
+            withContext(Dispatchers.Main) {
+                komik?.let {
+                    binding.detailTitle.text = it.title
+                    binding.detailAuthor.text = it.author
+                    binding.detailGenre.text = it.genre
+                    binding.detailType.text = it.type
+                    binding.detailStatus.text = it.status
+                    binding.detailReleased.text = it.released
+                    binding.detailSynopsis.text = it.synopsis
+
+                    Glide.with(this@UserDetail).load(it.cover).into(binding.detailCover)
+                    binding.detailCover.tag = it.cover
+
+                    isFavorite = true
+                    updateFavoriteIcon()
+                } ?: run {
+                    Toast.makeText(this@UserDetail, "Komik tidak ditemukan di database", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+        }
+    }
+
+    private fun addToFavorites(
+        title: String?,
+        author: String?,
+        genre: String?,
+        type: String?,
+        status: String?,
+        released: String?,
+        synopsis: String?,
+        cover: String?
+    ) {
         val komiks = KomikData(
             title = title ?: "",
             author = author ?: "",
@@ -123,8 +155,11 @@ class UserDetail : AppCompatActivity() {
             cover = cover ?: ""
         )
         CoroutineScope(Dispatchers.IO).launch {
-            komikRoomDatabase.komiksDao()?.insert(komiks) // Menggunakan DAO untuk menyimpan data
+            val insertedId = komikRoomDatabase.komiksDao()?.insert(komiks)
+            Log.d("FavoriteDebug", "Inserted ID: $insertedId, Title: ${komiks.title}, Cover: ${komiks.cover}")
             withContext(Dispatchers.Main) {
+                isFavorite = true
+                updateFavoriteIcon()
                 Toast.makeText(this@UserDetail, "$title added to favorites", Toast.LENGTH_SHORT).show()
             }
         }
@@ -132,8 +167,10 @@ class UserDetail : AppCompatActivity() {
 
     private fun removeFromFavorites(name: String?) {
         CoroutineScope(Dispatchers.IO).launch {
-            komikRoomDatabase.komiksDao()?.deleteByName(name ?: "") // Menggunakan DAO untuk menghapus data
+            komikRoomDatabase.komiksDao()?.deleteByName(name ?: "")
             withContext(Dispatchers.Main) {
+                isFavorite = false
+                updateFavoriteIcon()
                 Toast.makeText(this@UserDetail, "$name removed from favorites", Toast.LENGTH_SHORT).show()
             }
         }
@@ -141,9 +178,11 @@ class UserDetail : AppCompatActivity() {
 
     private fun checkIfFavorite(komikId: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val komik = komikRoomDatabase.komiksDao()?.getkomikById(komikId) // Ganti dengan metode yang sesuai di DAO
-            isFavorite = komik != null
+            // Cari komik berdasarkan judul
+            val komik = komikRoomDatabase.komiksDao()?.getkomikByTitle(binding.detailTitle.text.toString())
+
             withContext(Dispatchers.Main) {
+                isFavorite = komik != null
                 updateFavoriteIcon()
             }
         }

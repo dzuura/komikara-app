@@ -1,5 +1,6 @@
 package com.dza.komikara.user
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,10 +16,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserBookmark : Fragment() {
-
     private var _binding: FragmentUserBookmarkBinding? = null
     private val binding get() = _binding!!
-
     private lateinit var adapter: UserKomikFavoritAdapter
 
     override fun onCreateView(
@@ -44,8 +43,12 @@ class UserBookmark : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = UserKomikFavoritAdapter(emptyList()) { komik ->
-            // Tampilkan detail atau aksi lainnya saat item diklik
-            Toast.makeText(requireContext(), "${komik.title}", Toast.LENGTH_SHORT).show()
+            // Navigasi ke UserDetail
+            val intent = Intent(requireContext(), UserDetail::class.java).apply {
+                putExtra("komikId", komik.id.toString()) // Jika ID komik ada
+                putExtra("isLocal", true) // Menandakan bahwa data dari database lokal
+            }
+            startActivity(intent)
         }
         binding.rvKomikBookmark.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvKomikBookmark.adapter = adapter
